@@ -1,7 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException,APIRouter
 from pydantic import BaseModel
-
-app = FastAPI()
+router = APIRouter()
 books = [
     {
         "id": 1,
@@ -44,13 +43,13 @@ class BookUpdate(BaseModel):
 
 
 # 获取所有数据信息
-@app.get("/books", response_model=list[Book])
+@router.get("/books", response_model=list[Book])
 async def get_books():
     return books
 
 
 # 获取指定书籍信息
-@app.get("/books/{book_id}", response_model=Book)
+@router.get("/books/{book_id}", response_model=Book)
 async def get_book(book_id: int):
     book = next((b for b in books if b["id"] == book_id), None)
     if book:
@@ -59,7 +58,7 @@ async def get_book(book_id: int):
 
 
 # 更新书籍信息（部分更新）
-@app.patch("/books/{book_id}", response_model=Book)
+@router.patch("/books/{book_id}", response_model=Book)
 async def update_book(book_id: int, book_update: BookUpdate):
     book = next((b for b in books if b["id"] == book_id), None)
     if not book:
@@ -70,7 +69,7 @@ async def update_book(book_id: int, book_update: BookUpdate):
 
 
 # 创建新的书籍信息
-@app.post("/books", response_model=Book, status_code=201)
+@router.post("/books", response_model=Book, status_code=201)
 async def create_book(book_create: BookCreate):
     new_id = max(b["id"] for b in books) + 1 if books else 1
     new_book = {"id": new_id, **book_create.model_dump()}
@@ -79,7 +78,7 @@ async def create_book(book_create: BookCreate):
 
 
 # 删除书籍信息
-@app.delete("/books/{book_id}")
+@router.delete("/books/{book_id}")
 async def delete_book(book_id: int):
     book = next((b for b in books if b["id"] == book_id), None)
     if not book:
