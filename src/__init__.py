@@ -12,7 +12,6 @@ async def lifespan(app: FastAPI):
     init_db()
     print("连接数据库成功")
     yield
-    # Clean up the ML models and release the resources
     print("服务关闭")
 
 

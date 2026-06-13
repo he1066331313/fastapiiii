@@ -10,7 +10,10 @@ engine = create_engine(
 
 
 def init_db():
-    with engine.connect() as conn:
-        result = conn.execute(text("SELECT * FROM user"))
-        for row in result:
-            print(f"用户ID: {row[0]}, 用户名: {row[1]}")
+    # with engine.connect() as conn:
+    #     result = conn.execute(text("SELECT * FROM user"))
+    #     for row in result:
+    #         print(f"用户ID: {row[0]}, 用户名: {row[1]}")
+    with engine.begin() as conn:
+        from src.db.models import User,Books
+        SQLModel.metadata.create_all(engine)
